@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/node_modules/css/login.css">
+    <link rel="stylesheet" href="/node_modules/css/sign.css">
+    <script src="/node_modules/js/vue-2.4.0.js"></script>
+    <script src="/node_modules/js/vue-resource-1.3.4.js"></script>
+    <title>注册 - 简书</title>
+</head>
+
+<body class="no-padding reader-black-font" lang="zh-CN">
+    <div class="sign">
+        <div class="logo"><a href="/"><img src="picture/logo-58fd04f6f0de908401aa561cda6a0688.png" alt="Logo" /></a></div>
+        <div class="main">
+            <h4 class="title">
+                <div class="normal-title">
+                    <a class="" href="/login">登录</a>
+                    <b>·</b>
+                    <a id="js-sign-up-btn" class="active" href="/logup">注册</a>
+                </div>
+            </h4>
+            <div class="js-sign-up-container">
+                <form class="new_user" id="new_user">
+                    <div class="input-prepend restyle">
+                        <input placeholder="你的昵称" type="text" value="" name="nickname" id="user_nickname" v-model="nickname" />
+                        <i class="iconfont ic-user"></i>
+                    </div>
+                    <div class="input-prepend restyle no-radius js-normal">
+                        <input placeholder="手机号" type="tel" name="username" id="user_mobile_number" v-model="username"/>
+                        <i class="iconfont ic-phonenumber"></i>
+                    </div>
+                    <div class="input-prepend">
+                        <input placeholder="设置密码" type="password" name="password" id="user_password" v-model="password" />
+                        <i class="iconfont ic-password"></i>
+                    </div>
+                    <input type="submit" value="注册" class="sign-up-button" id="sign_up_btn" @click.prevent="sign" />
+                    <p class="sign-up-msg">点击 “注册” 即表示您同意并愿意遵守简书<br> <a target="_blank" href="http://www.jianshu.com/p/c44d171298ce">用户协议</a>
+                        和 <a target="_blank" href="http://www.jianshu.com/p/2ov8x3">隐私政策</a> 。</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var reg = new Vue({
+        el:'#new_user',
+        data:{
+            username:'',
+            password:'',
+            nickname:''
+        },
+        methods:{
+            sign(){
+                if(this.username.trim()=='' || this.password.trim()=='' || this.nickname.trim()==''){
+                    alert('请把表单填写完整!')
+                    return;
+                }
+                if(!(/^1[34578]\d{9}$/.test(this.username))){ 
+                    alert("手机号码有误，请重填");  
+                    return false; 
+                } 
+                this.$http.post('/register',{username:this.username, password:this.password, nickname:this.nickname},{emulateJSON: true
+                }).then((result)=>{
+                    if(result.body.status == 200){
+                        alert(result.body.msg)
+                        location.href = '/login'
+                    }else{
+                        alert(result.body.msg)
+                    }
+                })
+            }
+        }
+    })
+</script>
+</html>

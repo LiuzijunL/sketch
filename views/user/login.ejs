@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/node_modules/css/login.css">
+    <link rel="stylesheet" href="/node_modules/css/sign.css">
+    <script src="/node_modules/js/vue-2.4.0.js"></script>
+    <script src="/node_modules/js/vue-resource-1.3.4.js"></script>
+    <title>登录 - 简书</title>
+</head>
+
+<body class="no-padding reader-black-font" lang="zh-CN">
+    <div class="sign">
+        <div class="logo"><a href="/"><img src="/picture/logo-58fd04f6f0de908401aa561cda6a0688.png" alt="Logo" /></a></div>
+        <div class="main">
+
+
+            <h4 class="title">
+                <div class="normal-title">
+                    <a class="active" href="/login">登录</a>
+                    <b>·</b>
+                    <a id="js-sign-up-btn" class="" href="/logup">注册</a>
+                </div>
+            </h4>
+            <div class="js-sign-in-container">
+                <form id="new_session" >
+                    <!-- 正常登录登录名输入框 -->
+                    <div class="input-prepend restyle js-normal">
+                        <input placeholder="手机号或邮箱" type="text" name="username" id="session_email_or_mobile_number" v-model="username" />
+                        <i class="iconfont ic-user"></i>
+                    </div>
+
+                    <!-- 海外登录登录名输入框 -->
+
+                    <div class="input-prepend">
+                        <input placeholder="密码" type="password" name="password" id="session_password" v-model="password"  />
+                        <i class="iconfont ic-password"></i>
+                    </div>
+                    <div class="remember-btn">
+                        <input type="checkbox" value="true" checked="checked" id="session_remember_me" /><span>记住我</span>
+                    </div>
+                    <div class="forget-btn">
+                        <a class="" data-toggle="dropdown" href="">登录遇到问题?</a>
+                    </div>
+                    <button class="sign-in-button" id="sign-in-form-submit-btn" type="button" @click="login" @keyup.enter="login">
+                        <span id="sign-in-loading"></span>
+                        登录
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var sessions = new Vue({
+        el:'#new_session',
+        data:{
+            username:'',
+            password:''
+        },
+        methods:{
+            login(){
+                if(this.username.trim()==''){
+                    alert('请填写账号')
+                    return;
+                }
+                if(this.password.trim()==''){
+                    alert('请填写密码!')
+                    return;
+                }
+                this.$http.post('/login',{username:this.username, password:this.password},{emulateJSON: true}).then((result)=>{
+                    if(result.body.status == 200){
+                        alert(result.body.msg)
+                        location.href = '/'
+                    }else{
+                        alert(result.body.msg)
+                    }
+                })
+            }
+        }
+    })
+</script>
+
+</html>
