@@ -17,4 +17,12 @@ router.get('/logout',ctry.getlogout)
 //设置
 router.get('/settings/basic',ctry.getBasic)
 
+router.post('/settings/basic',ctry.postBasic)
+//访问文章页
+router.get('/writer',ctry.getWriter)
+//文章详情页面
+router.get('/show/:id',ctry.getShow)
+//写文章
+router.post('/writer/add',ctry.postWriter)
+
 module.exports = router

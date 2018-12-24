@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/node_modules/css/ad.css">
     <link rel="stylesheet" href="/node_modules/css/set.css">
+    <script src="/node_modules/js/vue-2.4.0.js"></script>
+    <script src="/node_modules/js/vue-resource-1.3.4.js"></script>
     <title>设置-简书</title>
 </head>
 
@@ -119,7 +121,7 @@
                                 <input type="text" name="q" id="q" value="" autocomplete="off" placeholder="搜索" class="search-input"
                                     data-mounted="1">
                                 <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"></i></a>
-                                <div id="navbar-search-tips" style="">
+                                <div id="navbar-search-tips">
                                     <div class="search-trending">
                                         <div class="search-trending-header clearfix"><span>热门搜索</span> <a><i class="iconfont ic-search-change"
                                                     style="transform: rotate(0deg);"></i> 换一批</a></div>
@@ -188,7 +190,7 @@
                         </a></li>
                 </ul>
             </div>
-            <div class="col-xs-16 col-xs-offset-8 main">
+            <div class="col-xs-16 col-xs-offset-8 main" id="update">
                 <table>
                     <thead>
                         <tr>
@@ -209,7 +211,7 @@
                             <td class="setting-title">
                                 昵称
                             </td>
-                            <td><input type="text" placeholder="请输入昵称" value="<%= user.nickname %>"></td>
+                            <td><input type="text" placeholder="请输入昵称" v-model="nickname"></td>
                         </tr>
                         <tr>
                             <td class="setting-title">电子邮件</td>
@@ -220,15 +222,15 @@
                         <tr>
                             <td class="setting-title">手机</td>
                             <td class="setted">
-                                <div><%= user.username %></div> <i class="iconfont ic-collections-followed"></i> <span>已验证</span>
+                                <div>{{ username }}</div> <i class="iconfont ic-collections-followed"></i> <span>已验证</span>
                                 <a class="cancel-bind">解除绑定</a>
                             </td>
                         </tr>
                         <tr>
                             <td class="setting-title setting-editor">常用编辑器</td>
                             <td>
-                                <div class="col-xs-8"><input type="radio" value="plain" checked="checked"> <span>富文本</span></div>
-                                <div class="col-xs-16"><input type="radio" value="markdown"> <span>Markdown <a href="javascript:;"
+                                <div class="col-xs-8"><input type="radio" checked="checked" name="wenben"> <span>富文本</span></div>
+                                <div class="col-xs-16"><input type="radio" name="wenben"> <span>Markdown <a href="javascript:;"
                                             target="_blank" class="help"><i class="iconfont ic-navigation-help"></i></a></span></div>
                                 <p>切换后对新建文章生效</p>
                             </td>
@@ -236,32 +238,60 @@
                         <tr>
                             <td class="setting-title setting-verticle">语言设置</td>
                             <td>
-                                <div class="col-xs-8"><input type="radio" value="zh-CN" checked="checked"> <span>中文简体</span></div>
-                                <div class="col-xs-16"><input type="radio" value="zh-TW"> <span>中文繁体</span></div>
+                                <div class="col-xs-8"><input type="radio" value="zh-CN" checked="checked" name="yuyan">
+                                    <span>中文简体</span></div>
+                                <div class="col-xs-16"><input type="radio" value="zh-TW" name="yuyan"> <span>中文繁体</span></div>
                             </td>
                         </tr>
                         <tr>
                             <td class="setting-title setting-verticle">接收谁的简信</td>
                             <td>
-                                <div class="col-xs-8"><input type="radio" value="true" checked="checked"> <span class="responsive-span">所有人</span></div>
-                                <div class="col-xs-16"><input type="radio" value="false"> <span class="responsive-span">我关注的人、我发过简信的人</span></div>
+                                <div class="col-xs-8"><input type="radio" checked="checked" name="show"> <span class="responsive-span">所有人</span></div>
+                                <div class="col-xs-16"><input type="radio" name="show"> <span class="responsive-span">我关注的人、我发过简信的人</span></div>
                             </td>
                         </tr>
                         <tr>
                             <td class="setting-title setting-verticle">提醒邮件通知</td>
                             <td>
-                                <div class="col-xs-8"><input type="radio" value="instantly" checked="checked"> <span class="responsive-span">所有动态</span></div>
-                                <div class="col-xs-11"><input type="radio" value="later"> <span class="responsive-span">每天未读汇总</span></div>
-                                <div class="col-xs-5"><input type="radio" value="none"> <span class="responsive-span">不接收</span></div>
+                                <div class="col-xs-8"><input type="radio" checked="checked" name="suoyou"> <span class="responsive-span">所有动态</span></div>
+                                <div class="col-xs-11"><input type="radio" name="suoyou"> <span class="responsive-span">每天未读汇总</span></div>
+                                <div class="col-xs-5"><input type="radio" name="suoyou"> <span class="responsive-span">不接收</span></div>
                             </td>
                         </tr>
                     </tbody>
-                </table> <input type="submit" class="btn btn-success setting-save" value="保存">
+                </table>
+                <input type="submit" class="btn btn-success setting-save" value="保存" @click.prevent="up">
                 <!---->
                 <!---->
             </div>
         </div>
     </div>
 </body>
+<script>
+    var update = new Vue({
+        el: '#update',
+        data: {
+            id: '<%= user.id %>',
+            nickname: '<%= user.nickname %>',
+            username: '<%= user.username %>',
+        },
+        methods: {
+            up() {
+                if (this.nickname.trim() == "") {
+                    alert("昵称不能为空!")
+                    return
+                }
+                this.$http.post("/settings/basic", { id: this.id, nickname: this.nickname }, { emulateJSON: true }).then(result => {
+                    if (result.body.status == 200) {
+                        alert(result.body.msg)
+                        location.reload()
+                    } else {
+                        alert(result.body.msg)
+                    }
+                })
+            }
+        }
+    })
+</script>
 
 </html>

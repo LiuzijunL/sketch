@@ -8,8 +8,11 @@
   <link rel="stylesheet" href="/node_modules/css/index.css">
   <link rel="stylesheet" href="/node_modules/css/shouye.css">
   <style>
-      .user:hover .dropdown-menu{
+    .user:hover .dropdown-menu{
         display: block;
+      }
+      .note-list .title:visited{
+        color:#333;
       }
   </style>
   <script src="/node_modules/js/vue-2.4.0.js"></script>
@@ -35,8 +38,7 @@
       <!-- 如果用户登录，显示下拉菜单 -->
       <div class="user">
         <div data-hover="dropdown">
-          <a class="avatar" href="/u/8d6f99739407"><img src="<%= user.headPortrait %>"
-              alt="120"></a>
+          <a class="avatar" href="javascript:;"><img src="<%= user.headPortrait %>" alt="120"></a>
         </div>
         <ul class="dropdown-menu">
           <li>
@@ -106,12 +108,70 @@
       </div>
     </div>
   </nav>
+  <!-- 主体部分 -->
   <div class="container index">
     <div class="row">
-
+      <!-- 文章模块 -->
+      <div class="col-xs-16 main">
+        <div id="indexCarousel" class="carousel slide">
+          <div class="carousel-inner">
+            <div class="item active">
+              <a href="javascript:;">
+                <img src="/picture/d0537cd5e0d6f10db8aae77ae7d2f4c32cf3d767.jpg" alt="">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="split-line"></div>
+        <div class="list-container">
+          <ul class="note-list">
+            <li>
+              <div class="content">
+                <a class="title" href="">人情|140字微小说</a>
+                <p class="abstract">
+                  四婶家请喝喜酒。 姐说：贺礼两百，来回路费四百，老太太说红包三百太少，不能给四百这个数，所以最少五百。家里大嫂平时给了我很多帮助，她孙子满月酒没...
+                </p>
+                <div class="meta">
+                  <a class="nickname" target="_blank" href="">柯基</a>
+                  <a href=""><i class="iconfont ic-list-comments"></i>20</a>
+                  <span><i class="iconfont ic-list-like"></i>20</span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="content">
+                <a class="title" href="">人情|140字微小说</a>
+                <p class="abstract">
+                  四婶家请喝喜酒。 姐说：贺礼两百，来回路费四百，老太太说红包三百太少，不能给四百这个数，所以最少五百。家里大嫂平时给了我很多帮助，她孙子满月酒没...
+                </p>
+                <div class="meta">
+                  <a class="nickname" target="_blank" href="">柯基</a>
+                  <a href=""><i class="iconfont ic-list-comments"></i>20</a>
+                  <span><i class="iconfont ic-list-like"></i>20</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-xs-7 col-xs-offset-1 aside">
+        <div class="board">
+          <a href="javascript:;" target="_blank">
+            <img src="/picture/banner-s-3-7123fd94750759acf7eca05b871e9d17.png" alt="">
+          </a>
+          <a href="javascript:;" target="_blank">
+            <img src="/picture/banner-s-4-b70da70d679593510ac93a172dfbaeaa.png" alt="">
+          </a>
+          <a href="javascript:;" target="_blank">
+            <img src="/picture/banner-s-5-4ba25cf5041931a0ed2062828b4064cb.png" alt="">
+          </a>
+          <a href="javascript:;" target="_blank">
+            <img src="/picture/banner-s-7-1a0222c91694a1f38e610be4bf9669be.png" alt="">
+          </a>
+        </div>
+      </div>
     </div>
   </div>
-
 
   <footer class="container">
     <div class="row">
@@ -138,4 +198,5 @@
 <script>
 
 </script>
+
 </html>
