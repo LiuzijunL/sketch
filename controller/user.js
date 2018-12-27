@@ -111,7 +111,18 @@ const ctry = {
             res.send({status:200,msg:'添加文章成功',userId: result.insertId})
         })
 
+    },
+    postShow:(req,res)=>{
+        const id = req.body.id
+        const sql = `select a.id,a.title,a.content,a.ctime,a.praise,u.nickname,u.headPortrait from articles as a
+        left join users as u
+        on a.authorId = u.id`
+        conn.query(sql,id,(err,result)=>{
+            if(err) return res.send({status: 400,msg:'访问出错!'})
+            res.send({status:200,msg:'查询成功',result:result[0]})
+        })
     }
+
 }
 
 module.exports = ctry

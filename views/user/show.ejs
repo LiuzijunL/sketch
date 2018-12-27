@@ -11,7 +11,7 @@
     <script src="/node_modules/js/vue-2.4.0.js"></script>
     <script src="/node_modules/js/vue-resource-1.3.4.js"></script>
     <style>
-        .post{
+        #post{
             margin: 0 auto;
             width: 620px;
             padding: 20px 0 40px;
@@ -44,7 +44,7 @@
             padding-right: 5px;
         }
     </style>
-    <title>“不是你好看，而是你看起来很好追” - 简书</title>
+    <title>“你” - 简书</title>
 </head>
 
 <body lang="zh-CN" class="reader-black-font" style="overflow-y: scroll;">
@@ -136,32 +136,57 @@
             </div>
         </div>
     </nav>
-    <div class="post">
-        <h1>不是你好看，而是你看起来很好追</h1>
+    <div id="post">
+        <h1>{{ title }}</h1>
         <!-- 作者区 -->
         <div class="author">
             <a href="javascript:;" class="avatar">
-                <img src="/images/11.jpg" alt="">
+                <img src="" alt="">
             </a>
             <div class="info">
                 <span class="name">
-                    <a href="javascript:;">柯基</a>
+                    <a href="javascript:;">{{ nickname }}</a>
                 </span>
                 <div class="meta">
-                    <span class="publish-time">2018.10.09 16:42</span>
+                    <span class="publish-time">{{ ctime }}</span>
                     <span class="comments-count">评论 172</span>
-                    <span class="rewards-count ">赞 2</span>
+                    <span class="rewards-count ">赞 {{ praise }}</span>
                 </div>
             </div>
         </div>
         <div class="content">
-            
+            {{ content }}
         </div>
     </div>
 </body>
 <script>
     var show = new Vue({
-        el: ''
+        el: '#post',
+        data:{
+            id:"",
+            nickname:'',
+            headPortrait:'',
+            content:'',
+            praise:'',
+            title:'',
+            ctime:''
+        },
+        methods:{
+            get(){
+                this.$http.post("/show",{id:location.pathname.split('/')[2]},{emulateJSON: true}).then(result=>{
+                    this.id = result.body.result.id
+                    this.nickname = result.body.result.nickname
+                    this.headPortrait = result.body.result.headPortrait
+                    this.content = result.body.result.content
+                    this.praise = result.body.result.praise
+                    this.title = result.body.result.title
+                    this.ctime = result.body.result.ctime
+                })
+            }
+        },
+        created() {
+            this.get()
+        }
     })
 </script>
 

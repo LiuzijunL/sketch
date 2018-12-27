@@ -22,6 +22,7 @@ router.post('/settings/basic',ctry.postBasic)
 router.get('/writer',ctry.getWriter)
 //文章详情页面
 router.get('/show/:id',ctry.getShow)
+router.post('/show',ctry.postShow)
 //写文章
 router.post('/writer/add',ctry.postWriter)
 
