@@ -201,9 +201,9 @@
                     <tbody class="base">
                         <tr>
                             <td class="top-line">
-                                <div class="avatar"><img src="<%= user.headPortrait %>"></div>
+                                <div class="avatar"><img :src="headPortrait"></div>
                             </td>
-                            <td class="top-line"><a class="btn btn-hollow"><input unselectable="on" type="file" class="hide">
+                            <td class="top-line"><a class="btn btn-hollow"><input unselectable="on" type="file" class="hide" @change='img' ref="imgId">
                                     更改头像
                                 </a></td>
                         </tr>
@@ -274,6 +274,7 @@
             id: '<%= user.id %>',
             nickname: '<%= user.nickname %>',
             username: '<%= user.username %>',
+            headPortrait:'<%= user.headPortrait %>',
         },
         methods: {
             up() {
@@ -281,7 +282,7 @@
                     alert("昵称不能为空!")
                     return
                 }
-                this.$http.post("/settings/basic", { id: this.id, nickname: this.nickname }, { emulateJSON: true }).then(result => {
+                this.$http.post("/settings/basic", { id: this.id, nickname: this.nickname,headPortrait: this.headPortrait}, { emulateJSON: true }).then(result => {
                     if (result.body.status == 200) {
                         alert(result.body.msg)
                         location.reload()
@@ -289,7 +290,17 @@
                         alert(result.body.msg)
                     }
                 })
+            },
+            img(){
+                var reader = new FileReader();
+                var file = this.$refs.imgId.files[0];
+                reader.readAsDataURL(file);
+                //onload 文件上传成功时的事件
+                reader.onload = ()=>{
+                    this.headPortrait = reader.result;
+                }
             }
+            
         }
     })
 </script>

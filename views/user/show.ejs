@@ -44,7 +44,7 @@
             padding-right: 5px;
         }
     </style>
-    <title>“你” - 简书</title>
+    <title id="title"> - 简书</title>
 </head>
 
 <body lang="zh-CN" class="reader-black-font" style="overflow-y: scroll;">
@@ -141,7 +141,7 @@
         <!-- 作者区 -->
         <div class="author">
             <a href="javascript:;" class="avatar">
-                <img src="" alt="">
+                <img :src="headPortrait" alt="">
             </a>
             <div class="info">
                 <span class="name">
@@ -149,13 +149,13 @@
                 </span>
                 <div class="meta">
                     <span class="publish-time">{{ ctime }}</span>
-                    <span class="comments-count">评论 172</span>
+                    <span class="comments-count">评论 0</span>
                     <span class="rewards-count ">赞 {{ praise }}</span>
                 </div>
             </div>
         </div>
-        <div class="content">
-            {{ content }}
+        <div class="content" v-html="content">
+            
         </div>
     </div>
 </body>
@@ -166,10 +166,10 @@
             id:"",
             nickname:'',
             headPortrait:'',
-            content:'',
             praise:'',
             title:'',
-            ctime:''
+            ctime:'',
+            content:''
         },
         methods:{
             get(){
@@ -177,10 +177,11 @@
                     this.id = result.body.result.id
                     this.nickname = result.body.result.nickname
                     this.headPortrait = result.body.result.headPortrait
-                    this.content = result.body.result.content
                     this.praise = result.body.result.praise
                     this.title = result.body.result.title
                     this.ctime = result.body.result.ctime
+                    this.content = result.body.result.content
+                    document.getElementById('title').innerText = this.title + ' - 简书'               
                 })
             }
         },

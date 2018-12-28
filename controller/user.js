@@ -2,6 +2,7 @@ const conn = require('../bd/bd.js')
 const moment = require('moment')
 const mditor = require("mditor");
 const parser = new mditor.Parser()
+const fs = require('fs')
 
 //用户路由
 const ctry = {
@@ -71,15 +72,23 @@ const ctry = {
         conn.query(sql1,data.nickname,(err,result)=>{
             if(err) return res.send({status:401,msg:'出现错误,请重试!'})
             if(result.length !== 1) return res.send({status:402,msg:'昵称已被注册,请重新修改!'})
-            const sql2 = 'update users set ? where id= ?'
-            conn.query(sql2,[data,data.id],(err,result)=>{
-                if(err) return res.send({status: 403,msg:'修改失败!'})
-                if(result.affectedRows !== 1) return res.send({status: 404,msg:'修改失败!'})
-                const sql3 = 'select * from users where id= ? '
-                conn.query(sql3,data.id,(err,result)=>{
-                    //重新挂载用户信息
-                    req.session.userInfo = result[0]
-                    res.send({status:200,msg:'修改成功!'})
+            var imgData = data.headPortrait
+            var base64Data = imgData.replace(/^data:image\/\w+;base64,/, "");
+            var dataBuffer = new Buffer(base64Data, 'base64');
+            data.headPortrait = "./images/11.jpg"
+            console.log(data.headPortrait)
+            fs.writeFile(data.headPortrait, dataBuffer, function(err) {
+                if(err) return res.send(err)
+                const sql2 = 'update users set ? where id= ?'
+                conn.query(sql2,[data,data.id],(err,result)=>{
+                    if(err) return res.send({status: 403,msg:'修改失败!'})
+                    if(result.affectedRows !== 1) return res.send({status: 404,msg:'修改失败!'})
+                    const sql3 = 'select * from users where id= ? '
+                    conn.query(sql3,data.id,(err,result)=>{
+                        //重新挂载用户信息
+                        req.session.userInfo = result[0]
+                        res.send({status:200,msg:'修改成功!'})
+                    })
                 })
             })
         })
@@ -116,10 +125,28 @@ const ctry = {
         const id = req.body.id
         const sql = `select a.id,a.title,a.content,a.ctime,a.praise,u.nickname,u.headPortrait from articles as a
         left join users as u
-        on a.authorId = u.id`
+        on a.authorId = u.id
+        where a.id = ?`
         conn.query(sql,id,(err,result)=>{
             if(err) return res.send({status: 400,msg:'访问出错!'})
+            result[0].content = parser.parse(result[0].content)
             res.send({status:200,msg:'查询成功',result:result[0]})
+        })
+    },
+    //主页显示文章
+    showArticles:(req,res)=>{
+        const page = Number(req.body.page)
+        const sql = `select a.id,a.title,a.content,a.ctime,a.praise,u.nickname,u.headPortrait from articles as a
+        left join users as u
+        on a.authorId = u.id
+        order by a.ctime desc
+        limit ?,10`
+        conn.query(sql,page,(err,result)=>{
+            if(err) return res.send({status:400,msg:'出错'})
+            result.forEach((item,i) => {
+                item.content = parser.parse(item.content)
+            });
+            res.send({status:200,msg:'查询成功',result:result})
         })
     }
 
