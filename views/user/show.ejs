@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/node_modules/css/ad.css">
     <link rel="stylesheet" href="/node_modules/css/set.css">
     <link rel="stylesheet" href="/node_modules/mditor/dist/css/mditor.min.css" />
+    <link rel="stylesheet" href="/node_modules/css/show.css">
     <script src="/node_modules/js/vue-2.4.0.js"></script>
     <script src="/node_modules/js/vue-resource-1.3.4.js"></script>
     <style>
@@ -155,25 +156,83 @@
             </div>
         </div>
         <div class="content" v-html="content">
-            
+
+        </div>
+        <!-- 赞 -->
+        <div class="meta-bottom">
+            <div class="like">
+                <div class="btn like-group">
+                    <div class="btn-like">
+                        <a>喜欢</a>
+                    </div>
+                    <div class="modal-wrap">
+                        <a>11</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 评论 -->
+        <div id="comment-list" class="comment-list">
+            <div>
+                <form class="new-comment">
+                    <a class="avatar">
+                        <img src="/images/1234.jpg" alt="">
+                    </a>
+                    <textarea placeholder='写下你的评论...'>
+
+                    </textarea>
+                    <div class="write-function-block">
+                        <a class="btn btn-send">发送</a>
+                        <a class="cancel">取消</a>
+                    </div>
+                </form>
+            </div>
+            <div class="featured-comment-list">
+                <div class="top-title">
+                    <span>精彩评论（10）</span>
+                </div>
+                <div class="comment" v-for="(item,i) in list" :key="item.id">
+                    <div>
+                        <!-- 评论者信息 -->
+                        <div class="author">
+                            <div class="v-tooltip-container">
+                                <a href="" class="avatar">
+                                    <img :src="item.headPortrait" alt="">
+                                </a>
+                            </div>
+                            <div class="info">
+                                <a href="" class="name">{{ item.nickname}}</a>
+                                <div class="meta">
+                                    <span>{{ i }}楼 · {{ item.ctime}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 内容 -->
+                        <div class="comment-wrap">
+                            <p>{{ item.content }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 <script>
     var show = new Vue({
         el: '#post',
-        data:{
-            id:"",
-            nickname:'',
-            headPortrait:'',
-            praise:'',
-            title:'',
-            ctime:'',
-            content:''
+        data: {
+            id: "",
+            nickname: '',
+            headPortrait: '',
+            praise: '',
+            title: '',
+            ctime: '',
+            content: '',
+            list:''
         },
-        methods:{
-            get(){
-                this.$http.post("/show",{id:location.pathname.split('/')[2]},{emulateJSON: true}).then(result=>{
+        methods: {
+            get() {
+                this.$http.post("/show", { id: location.pathname.split('/')[2] }, { emulateJSON: true }).then(result => {
                     this.id = result.body.result.id
                     this.nickname = result.body.result.nickname
                     this.headPortrait = result.body.result.headPortrait
@@ -181,12 +240,18 @@
                     this.title = result.body.result.title
                     this.ctime = result.body.result.ctime
                     this.content = result.body.result.content
-                    document.getElementById('title').innerText = this.title + ' - 简书'               
+                    document.getElementById('title').innerText = this.title + ' - 简书'
+                })
+            },
+            show(){
+                this.$http.post('/articles/discuss',{ id: location.pathname.split('/')[2] },{ emulateJSON: true }).then(result=>{
+                    this.list = result.body.result
                 })
             }
         },
         created() {
-            this.get()
+            this.get(),
+            this.show()
         }
     })
 </script>

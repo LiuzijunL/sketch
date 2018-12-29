@@ -71,6 +71,10 @@
                     alert('请填写密码!')
                     return;
                 }
+                if(!(/^1[34578]\d{9}$/.test(this.username))){ 
+                    alert("用户名格式有误，请重填");  
+                    return false; 
+                } 
                 this.$http.post('/login',{username:this.username, password:this.password},{emulateJSON: true}).then((result)=>{
                     if(result.body.status == 200){
                         alert(result.body.msg)

@@ -27,5 +27,7 @@ router.post('/show',ctry.postShow)
 router.post('/writer/add',ctry.postWriter)
 //主页显示最新文章
 router.post('/show/newArticles',ctry.showArticles)
+//评论
+router.post('/articles/discuss',ctry.showDiscuss)
 
 module.exports = router

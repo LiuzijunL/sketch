@@ -75,10 +75,11 @@ const ctry = {
             var imgData = data.headPortrait
             var base64Data = imgData.replace(/^data:image\/\w+;base64,/, "");
             var dataBuffer = new Buffer(base64Data, 'base64');
-            data.headPortrait = "./images/11.jpg"
-            console.log(data.headPortrait)
-            fs.writeFile(data.headPortrait, dataBuffer, function(err) {
-                if(err) return res.send(err)
+            var time = Math.floor(Math.random(1000,9999)) + '' + (+new Date())
+            data.headPortrait = "/images/"+ time + '.jpg'
+            var imgId = "./images/"+ time + '.jpg'
+            fs.writeFile(imgId, dataBuffer, function(err) {
+                if(err) return res.send({status: 402,msg:"图片太大,请重新选择!"})
                 const sql2 = 'update users set ? where id= ?'
                 conn.query(sql2,[data,data.id],(err,result)=>{
                     if(err) return res.send({status: 403,msg:'修改失败!'})
@@ -147,6 +148,22 @@ const ctry = {
                 item.content = parser.parse(item.content)
             });
             res.send({status:200,msg:'查询成功',result:result})
+        })
+    },
+    //评论
+    showDiscuss:(req,res)=>{
+        const id = req.body.id
+        const sql = `select d.id,d.content,d.ctime,u.nickname,u.headPortrait from discuss as d
+        left join users as u
+        on d.authorId = u.id
+        and d.articlesId = ${id}
+        order by d.ctime desc`
+        conn.query(sql,(err,result)=>{
+            if(err) {
+                return res.send({status:402,msg:'查询出错'})
+            }
+            res.send({status:200,result:result})
+            
         })
     }
 
