@@ -44,6 +44,9 @@
         .meta span{
             padding-right: 5px;
         }
+        .user:hover .dropdown-menu{
+            display: block;
+        }
     </style>
     <title id="title"> - 简书</title>
 </head>
@@ -71,25 +74,8 @@
                 </div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="javascript:;">
+                        <a href="/u/<%= user.id %>">
                             <i class="iconfont ic-navigation-profile"></i><span>我的主页</span>
-                        </a> </li>
-                    <li>
-                        <!-- TODO bookmarks_path -->
-                        <a href="javascript:;">
-                            <i class="iconfont ic-navigation-mark"></i><span>收藏的文章</span>
-                        </a> </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont ic-navigation-like"></i><span>喜欢的文章</span>
-                        </a> </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont ic-paid"></i><span>已购内容</span>
-                        </a> </li>
-                    <li>
-                        <a href="javascript:;">
-                            <i class="iconfont ic-navigation-wallet"></i><span>我的钱包</span>
                         </a> </li>
                     <li>
                         <a href="/settings/basic">
@@ -100,7 +86,7 @@
                             <i class="iconfont ic-navigation-feedback"></i><span>帮助与反馈</span>
                         </a> </li>
                     <li>
-                        <a rel="nofollow" data-method="delete" href="/logout">
+                        <a id="nofollow" data-method="<%= user.id %>" href="/logout" >
                             <i class="iconfont ic-navigation-signout"></i><span>退出</span>
                         </a> </li>
                 </ul>
@@ -150,7 +136,7 @@
                 </span>
                 <div class="meta">
                     <span class="publish-time">{{ ctime }}</span>
-                    <span class="comments-count">评论 0</span>
+                    <span class="comments-count">评论 {{ count }}</span>
                     <span class="rewards-count ">赞 {{ praise }}</span>
                 </div>
             </div>
@@ -175,21 +161,31 @@
         <div id="comment-list" class="comment-list">
             <div>
                 <form class="new-comment">
+                    <% if(islogin) { %>
                     <a class="avatar">
-                        <img src="/images/1234.jpg" alt="">
+                        <img src="<%= user.headPortrait %>" alt="">
                     </a>
-                    <textarea placeholder='写下你的评论...'>
+                    <textarea placeholder='写下你的评论...' v-model="Discuss">
 
                     </textarea>
                     <div class="write-function-block">
-                        <a class="btn btn-send">发送</a>
+                        <a class="btn btn-send" @click="discuss">发送</a>
                         <a class="cancel">取消</a>
                     </div>
+                    <% } else {%>
+                    <a class="avatar">
+                        <img src="/picture/avatar_default.png" alt="">
+                    </a>
+                    <div class="sign-container">
+                        <a href="/login" class="btn btn-sign">登录</a>
+                        <span>后发表评论</span>
+                    </div>
+                    <% } %>
                 </form>
             </div>
             <div class="featured-comment-list">
                 <div class="top-title">
-                    <span>精彩评论（10）</span>
+                    <span>精彩评论（{{ count }}）</span>
                 </div>
                 <div class="comment" v-for="(item,i) in list" :key="item.id">
                     <div>
@@ -203,7 +199,7 @@
                             <div class="info">
                                 <a href="" class="name">{{ item.nickname}}</a>
                                 <div class="meta">
-                                    <span>{{ i }}楼 · {{ item.ctime}}</span>
+                                    <span>{{ i+1 }}楼 · {{ item.ctime}}</span>
                                 </div>
                             </div>
                         </div>
@@ -228,7 +224,9 @@
             title: '',
             ctime: '',
             content: '',
-            list:''
+            list:'',
+            count:'',
+            Discuss:'',
         },
         methods: {
             get() {
@@ -245,8 +243,32 @@
             },
             show(){
                 this.$http.post('/articles/discuss',{ id: location.pathname.split('/')[2] },{ emulateJSON: true }).then(result=>{
-                    this.list = result.body.result
+                    this.list = result.body.result[0]
+                    this.count = result.body.result[1][0].count
                 })
+            },
+            discuss(){
+                if(this.Discuss.trim() == ""){
+                    alert('请填写评论内容!')
+                    return
+                }
+                var authorId = document.getElementById('nofollow').dataset["method"];
+                this.$http.post('/discuss',{content: this.Discuss,articlesId: location.pathname.split('/')[2],authorId:authorId},
+                { emulateJSON: true }).then(result=>{
+                    if(result.body.status ==200){
+                        alert('评论成功!')
+                        this.Discuss = ''
+                        this.show()
+                    }else{
+                        alert('评论失败!请重试!')
+                    }
+                })
+            },
+            open2() {
+                this.$message({
+                    message: '恭喜你，这是一条成功消息',
+                    type: 'success'
+                });
             }
         },
         created() {

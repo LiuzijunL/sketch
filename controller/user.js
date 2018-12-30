@@ -137,13 +137,31 @@ const ctry = {
     //主页显示文章
     showArticles:(req,res)=>{
         const page = Number(req.body.page)
-        const sql = `select a.id,a.title,a.content,a.ctime,a.praise,u.nickname,u.headPortrait from articles as a
+        const sql = `select a.id,a.title,a.content,a.ctime,a.praise,a.authorId,u.nickname,u.headPortrait from articles as a
         left join users as u
         on a.authorId = u.id
         order by a.ctime desc
-        limit ?,10`
+        limit ?,4;
+        select count(*) as count from articles`
         conn.query(sql,page,(err,result)=>{
             if(err) return res.send({status:400,msg:'出错'})
+            result[0].forEach((item,i) => {
+                item.content = parser.parse(item.content)
+            });
+            res.send({status:200,msg:'查询成功',result:result[0],count:result[1]})
+        })
+    },
+    //追加查看新文章
+    showAddArticles:(req,res)=>{
+        const page = Number(req.body.page)
+        const pageSize = Number(req.body.size)
+        const sql = `select a.id,a.title,a.content,a.ctime,a.praise,a.authorId,u.nickname,u.headPortrait from articles as a
+        left join users as u
+        on a.authorId = u.id
+        order by a.ctime desc
+        limit ${page},${pageSize}`
+        conn.query(sql,(err,result)=>{
+            if(err) return console.log(err)
             result.forEach((item,i) => {
                 item.content = parser.parse(item.content)
             });
@@ -156,14 +174,44 @@ const ctry = {
         const sql = `select d.id,d.content,d.ctime,u.nickname,u.headPortrait from discuss as d
         left join users as u
         on d.authorId = u.id
-        and d.articlesId = ${id}
-        order by d.ctime desc`
+        where d.articlesId = ${id}
+        order by d.ctime desc;
+        select count(*) as count from discuss where articlesId = ${id}`
         conn.query(sql,(err,result)=>{
             if(err) {
                 return res.send({status:402,msg:'查询出错'})
             }
             res.send({status:200,result:result})
             
+        })
+    },
+    Discuss:(req,res)=>{
+        const data = req.body
+        data.ctime = moment().format('YYYY.M.D HH.mm')
+        const sql = 'insert into discuss set ?'
+        conn.query(sql,data,(err,result)=>{
+            if(err) return console.log(err)
+            if(result.affectedRows !== 1) return res.send({status: 402,msg: '评论失败!'})
+            res.send({status:200,msg:'评论成功'})
+        })
+    },
+    //个人主页
+    user:(req,res)=>{
+        const id = req.params.id
+        const sql = 'select u.id,u.nickname,u.headPortrait from users as u where id =?'
+        conn.query(sql,id,(err,result)=>{
+            if(err) return res.send({status:401,msg:'出现错误'})
+            var aut = result[0]
+            const sql2 = 'select a.id,a.title,a.praise from articles as a where a.authorId = ?'
+            conn.query(sql2,id,(err,result)=>{
+                if(err) return res.send({status:402,msg:'出错'})
+                res.render('./user/u.ejs',{
+                    user: req.session.userInfo,
+                    islogin: req.session.islogin,
+                    author: aut,
+                    articles: result
+                })
+            })
         })
     }
 

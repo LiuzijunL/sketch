@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/node_modules/css/index.css">
+    <link rel="stylesheet" href="/node_modules/css/shouye.css">
+    <link rel="stylesheet" href="/node_modules/css/u.css">
+    <script src="/node_modules/js/vue-2.4.0.js"></script>
+    <script src="/node_modules/js/vue-resource-1.3.4.js"></script>
+    <title>个人主页-简书</title>
+    <style>
+        .user:hover .dropdown-menu {
+            display: block;
+        }
+
+        .note-list .title:visited {
+            color: #333;
+        }
+
+        .content .abstract {
+            height: 78px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .content h2{
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body lang="zh-CN" class="reader-black-font">
+    <!-- 全局顶部导航栏 -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="width-limit">
+            <!-- 左上方 Logo -->
+            <a class="logo" href="/"><img src="/picture/nav-logo-4c7bbafe27adc892f3046e6978459bac.png" alt="Nav logo" /></a>
+
+            <!-- 右上角 -->
+            <!-- 未登录显示登录/注册/写文章 -->
+            <a class="btn write-btn" target="_blank" href="/writer">
+                <i class="iconfont ic-write"></i>写文章
+            </a>
+            <% if(!islogin) { %>
+            <a class="btn sign-up" id="sign_up" href="/logup">注册</a>
+            <a class="btn log-in" id="sign_in" href="/login">登录</a>
+            <% } else {%>
+            <!-- 如果用户登录，显示下拉菜单 -->
+            <div class="user">
+                <div data-hover="dropdown">
+                    <a class="avatar" href="javascript:;"><img src="<%= user.headPortrait %>" alt="120"></a>
+                </div>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/u/<%= author.id %>">
+                            <i class="iconfont ic-navigation-profile"></i><span>我的主页</span>
+                        </a> </li>
+                    <li>
+                        <a href="/settings/basic">
+                            <i class="iconfont ic-navigation-settings"></i><span>设置</span>
+                        </a> </li>
+                    <li>
+                        <a href="/faqs">
+                            <i class="iconfont ic-navigation-feedback"></i><span>帮助与反馈</span>
+                        </a> </li>
+                    <li>
+                        <a rel="nofollow" data-method="delete" href="/logout">
+                            <i class="iconfont ic-navigation-signout"></i><span>退出</span>
+                        </a> </li>
+                </ul>
+            </div>
+            <% } %>
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu"
+                        aria-expanded="false">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="nav navbar-nav">
+                        <li class="tab active">
+                            <a href="/">
+                                <span class="menu-text">首页</span><i class="iconfont ic-navigation-discover menu-icon"></i>
+                            </a> </li>
+                        <li class="tab ">
+                            <a id="web-nav-app-download-btn" class="app-download-btn" href="/apps?utm_medium=desktop&amp;utm_source=navbar-apps"><span
+                                    class="menu-text">下载App</span><i class="iconfont ic-navigation-download menu-icon"></i></a>
+                        </li>
+                        <li class="search">
+                            <form target="_blank" action="/search" accept-charset="UTF-8" method="get"><input name="utf8"
+                                    type="hidden" value="&#x2713;" />
+                                <input type="text" name="q" id="q" value="" autocomplete="off" placeholder="搜索" class="search-input" />
+                                <a class="search-btn" href="javascript:void(null)"><i class="iconfont ic-search"></i></a>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container person">
+        <div class="row">
+            <div class="main-top">
+                <a href="" class="avatar">
+                    <img src="<%= author.headPortrait %>" alt="">
+                </a>
+                <div class="title">
+                    <a href="" class="name">
+                        <%= author.nickname %></a>
+                </div>
+                <div class="info">
+                    <ul>
+                        <li>
+                            <div class="meta-block">
+                                <a href="">
+                                    <p>0</p>
+                                    关注
+                                    <i class="iconfont ic-arrow"></i>
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="meta-block">
+                                <a href="">
+                                    <p>0</p>
+                                    文章
+                                    <i class="iconfont ic-arrow"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="outer-container">
+                <ul id="trigger-menu">
+                    <li class="active">
+                        <a href="javascript:;">
+                            <i class="iconfont ic-articles"></i>
+                            文章
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-container">
+                <ul class="note-list">
+                    <% if(articles.length !== 0){ %>
+                    <% articles.forEach(item=>{ %>
+                    <li>
+                        <div class="content">
+                            <a class="title" href="/show/<%= item.id%> ">
+                                <%= item.title %></a>
+                            <div class="meta">
+                                <a class="nickname" target="_blank" href="">
+                                    <%= author.nickname %></a>
+                                <a href=""><i class="iconfont ic-list-comments"></i>20</a>
+                                <span><i class="iconfont ic-list-like"></i>
+                                    <%= item.praise %></span>
+                            </div>
+                        </div>
+                    </li>
+                    <% }) %>
+                    <% }else{ %>
+                    <li>
+                        <div class="content">
+                            <h2>这作者很懒,什么都没有写...</h2>
+                        </div>
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
