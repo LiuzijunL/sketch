@@ -127,7 +127,7 @@
                 </p>
                 <div class="meta">
                   <a class="nickname" target="_blank" :href="'/u/'+item.authorId">{{ item.nickname }}</a>
-                  <a href=""><i class="iconfont ic-list-comments"></i>20</a>
+                  <a :href="'/show/'+item.id"><i class="iconfont ic-list-comments"></i>5</a>
                   <span><i class="iconfont ic-list-like"></i>{{ item.praise }}</span>
                 </div>
               </div>
@@ -206,7 +206,6 @@
           this.list = result.body.result;
           this.page = 4
           this.count = result.body.count[0].count
-          console.log(result.body.result)
         })
       },
       openFullScreen() {
@@ -227,7 +226,6 @@
         }else{
           setTimeout(() => {
               this.flag = false
-              alert('没有更多文章了哟!')
           }, 100);
         }
       }

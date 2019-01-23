@@ -12,6 +12,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
+    "cors": "^2.8.5",
     "ejs": "^2.6.1",
     "element-ui": "^2.4.11",
     "express": "^4.16.3",

@@ -1,0 +1,12 @@
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (1, '前端的路还很遥远', '2018.12.29 23.03', 7, 4);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (2, '嘤嘤嘤', '2018.12.29 23.12', 7, 1);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (3, '杨某一日游', '2018.12.30 11.10', 7, 6);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (4, '测试', '2018.12.30 11.14', 6, 5);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (5, '测试', '2018.12.30 12.42', 7, 1);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (6, '测试', '2018.12.30 12.55', 7, 5);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (7, '测试', '2018.12.30 13.04', 4, 1);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (8, '爸爸来啦', '2018.12.30 16.31', 8, 6);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (9, '阳仔不在', '2018.12.30 16.40', 9, 1);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (10, '嘿嘿', '2018.12.30 16.44', 10, 7);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (11, '沙发', '2018.12.30 16.44', 10, 7);
+INSERT INTO `discuss` (`id`, `content`, `ctime`, `articlesId`, `authorId`) VALUES (12, '嘤嘤嘤', '2019.1.21 11.49', 10, 1);

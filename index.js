@@ -18,6 +18,8 @@ app.use('/picture',express.static('./picture'))
 app.use('/images',express.static('./images'))
 //注册表单中间件
 app.use(bodyParser.urlencoded({extended:false}))
+// const cors = require('cors')
+// app.use(cors())
 
 const router = require('./router/router.js')
 app.use(router)
